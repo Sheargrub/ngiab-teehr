@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "teehr-nextgen"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+bokeh = "^3.6.0"
+teehr = {git = "http://github.com/RTIInternational/teehr.git", rev = "265-teehr-v040-fails-to-start-in-teehrhub"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
