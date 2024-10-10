@@ -3538,8 +3538,8 @@ zarr = "^2.16.1"
 [package.source]
 type = "git"
 url = "http://github.com/RTIInternational/teehr.git"
-reference = "265-teehr-v040-fails-to-start-in-teehrhub"
-resolved_reference = "7a5ebb93e34507980e25379aec484e7439303772"
+reference = "v0.4-beta"
+resolved_reference = "3fe62733756dc24398d87f82cbca9e8849b38c71"
 
 [[package]]
 name = "tomli"
@@ -4279,4 +4279,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b5c1bda5a97185ea37dfac589bd91da67ea565325ba9c2522b24ca66d9679459"
+content-hash = "71c1fb710ea98ad54eae92af163e82d527868ca159bc4a24941ac463dfe513b8"
