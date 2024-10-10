@@ -147,8 +147,13 @@ def main():
             metrics.RelativeBias()
         ]
     ).to_pandas()
-
     df.to_csv(Path(TEST_STUDY_DIR, "metrics.csv"), index=False)
+
+    # Plotting functionality is in development.
+    ts_df = ev.secondary_timeseries.to_pandas()
+    ts_df.teehr.timeseries_plot(
+        output_dir=TEST_STUDY_DIR
+    )
 
 
 if __name__ == "__main__":
