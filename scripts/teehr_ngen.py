@@ -16,8 +16,8 @@ from utils import (
 )
 
 # In NGEN this will be provided by NGEN.
-# NGEN_DATA_DIR = Path("data")
-NGEN_DATA_DIR = Path("/home/sam/git/NextGen/ngen-data/AWI_16_2853886_006")
+NGEN_DATA_DIR = Path("data")
+# NGEN_DATA_DIR = Path("/home/sam/git/NextGen/ngen-data/AWI_16_2853886_006")
 
 # Set a path to the directory where the evaluation will be created
 TEST_STUDY_DIR = Path(NGEN_DATA_DIR, "teehr")
@@ -154,6 +154,8 @@ def main():
     ts_df.teehr.timeseries_plot(
         output_dir=TEST_STUDY_DIR
     )
+
+    pass
 
 
 if __name__ == "__main__":
