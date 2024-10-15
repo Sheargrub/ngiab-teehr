@@ -12,4 +12,4 @@ RUN python -m pip install -r requirements.txt
 
 COPY scripts/ .
 
-CMD ["python", "teehr_ngen.py"]
+ENTRYPOINT ["python", "teehr_ngen.py"]

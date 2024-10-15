@@ -6,6 +6,7 @@ import pandas as pd
 from teehr import Evaluation
 from teehr import Metrics as metrics
 from teehr.models.tables import Configuration
+# from dask.distributed import Client
 
 from utils import (
     get_usgs_nwm30_crosswalk,
@@ -61,9 +62,9 @@ def main():
     all_ngen_output = pd.concat(gage_output_list)
     all_ngen_output.to_parquet(NGEN_CACHE_OUTPUT)
 
-    # FOR TESTING: Limit to a single day.
-    end_date = "2018-04-02 01:00:00"
-    all_ngen_output = all_ngen_output[all_ngen_output["current_time"] <= end_date]
+    # # FOR TESTING: Limit to a single day.
+    # end_date = "2018-04-02 01:00:00"
+    # all_ngen_output = all_ngen_output[all_ngen_output["current_time"] <= end_date]
 
     # Get primary locations and load to dataset.
     locations_df = usgs_point_geom.loc[all_ngen_output["usgs_id"].unique()]
@@ -105,14 +106,17 @@ def main():
     )
 
     # Load the NWM retrospective timeseries
+    # client = Client()
     ev.fetch.nwm_retrospective_points(
         nwm_version="nwm30",
         variable_name="streamflow",
         start_date=start_date,
         end_date=end_date
     )
+    # client.close()
 
     # Load the NGEN simulation timeseries
+    # client = Client()
     ev.secondary_timeseries.load_parquet(
         in_path=NGEN_CACHE_OUTPUT,
         field_mapping={
@@ -154,8 +158,6 @@ def main():
     ts_df.teehr.timeseries_plot(
         output_dir=TEST_STUDY_DIR
     )
-
-    pass
 
 
 if __name__ == "__main__":
