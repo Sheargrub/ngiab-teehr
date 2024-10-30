@@ -1,5 +1,5 @@
-# teehr-nextgen
-A repository for coupling TEEHR with Nextgen simulation output.
+# ngiab-teehr
+A repository for coupling TEEHR with Nextgen-In-A-Box (NGIAB) simulation output.
 
 Warning: This code is highly experimental!
 
