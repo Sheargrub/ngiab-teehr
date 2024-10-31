@@ -205,9 +205,9 @@ echo -e "Any copied files can be found here: $HOST_DATA_PATH/outputs"
 # else
 #     IMAGE_NAME=a935462133478.dkr.ecr.us-east-2.amazonaws.com/teehr:latest
 # fi
-IMAGE_NAME=935462133478.dkr.ecr.us-east-2.amazonaws.com/teehr-nextgen:latest
+IMAGE_NAME=awiciroh/ngiab-teehr:latest
 while true; do
-    echo -e "${YELLOW}Run a TEEHR Evaluation on the output (https://rtiinternational.github.io/teehr-nextgen/)? (y/N, default: y):${RESET}"
+    echo -e "${YELLOW}Run a TEEHR Evaluation on the output (https://rtiinternational.github.io/ngiab-teehr/)? (y/N, default: y):${RESET}"
     read -r run_teehr_choice
     # Default to 'y' if input is empty
     if [[ -z "$run_teehr_choice" ]]; then
@@ -234,7 +234,7 @@ if [[ "$run_teehr_choice" == [Yy]* ]]; then
                 ;;
             "Run TEEHR after updating to latest docker image")
                 echo "pulling container and running the TEEHR evaluation"
-                aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 935462133478.dkr.ecr.us-east-2.amazonaws.com && docker pull $IMAGE_NAME
+                docker pull $IMAGE_NAME
                 break
                 ;;
             Exit)
