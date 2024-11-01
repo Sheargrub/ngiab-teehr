@@ -5,9 +5,9 @@ Warning: This code is experimental!
 
 The `example_guide.sh` script demonstrates running a TEEHR evaluation (see `scripts/teehr_ngen.py`) on NGIAB output.
 
-#### To build and push the TEEHR image to the AWI CIROH registry
+### To build and push the TEEHR image to the AWI CIROH registry
 
-To customize the metrics calculated by TEEHR or any other code related to the workflow:
+Customize the metrics calculated by TEEHR or any other code related to the workflow:
 
 1. Create a branch off of main
 2. Make your edits to `scripts/teehr_ngen.py` and/or `scripts/utils.py`
@@ -24,7 +24,3 @@ git push origin v0.x.x
 This will trigger a `github action` to build and push the image with your tag to the AWI CIROH registry.
 
 Now you can specify the image tag in the guide.sh script.
-
-
-
-**Note**: Currently the `example_guide.sh` script is hardcoded to always pull the TEEHR "latest" image from the AWI CIROH registry.
