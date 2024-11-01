@@ -18,11 +18,11 @@ USGS_POINT_GEOMETRY = "s3://ciroh-rti-public-data/teehr-data-warehouse/common/ge
 
 
 def get_usgs_nwm30_crosswalk():
-    return pd.read_parquet(USGS_NWM30_XWALK)
+    return pd.read_parquet(USGS_NWM30_XWALK, storage_options={"client_kwargs":{"region_name":"us-east-2"},"anon":True})
 
 
 def get_usgs_point_geometry():
-    return gpd.read_parquet(USGS_POINT_GEOMETRY)
+    return gpd.read_parquet(USGS_POINT_GEOMETRY, storage_options={"client_kwargs":{"region_name":"us-east-2"},"anon":True})
 
 
 def get_simulation_output_csv(wb_id, folder_to_eval):
@@ -75,6 +75,9 @@ def get_gages_from_hydrofabric(folder_to_eval):
         results = conn.execute(
             "SELECT id, rl_gages FROM flowpath_attributes WHERE rl_gages IS NOT NULL"
         ).fetchall()
+    # Fixme Take only the first result if a gage shows up more than once.
+    # Should be fixed upstream in hydrofabric with only error handling here.
+    results = [(r[0],r[1].split(',')[0]) for r in results]
     return results
 
 
