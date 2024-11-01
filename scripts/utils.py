@@ -7,6 +7,7 @@ import json
 
 import geopandas as gpd
 import pandas as pd
+import xarray as xr
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,37 @@ def get_usgs_nwm30_crosswalk():
 
 def get_usgs_point_geometry():
     return gpd.read_parquet(USGS_POINT_GEOMETRY, storage_options={"client_kwargs":{"region_name":"us-east-2"},"anon":True})
+
+
+def get_simulation_output_netcdf(wb_id, folder_to_eval):
+    """Read Nextgen simulation output from netcdf file.
+
+    Ref: https://github.com/JoshCu/ngiab_eval/blob/b39e5af6eb382d64f07a5c55a7acb0109dd26f8f/ngiab_eval/core.py#L109  # noqa
+    """
+    nc_file = folder_to_eval / "outputs" / "troute" / "*.nc"
+    # find the nc file
+    nc_files = glob.glob(str(nc_file))
+    if len(nc_files) == 0:
+        raise FileNotFoundError(
+            "No netcdf file found in the outputs/troute folder"
+        )
+    if len(nc_files) > 1:
+        logger.warning(
+            "Multiple netcdf files found in the outputs/troute folder"
+        )
+        logger.warning("Using the most recent file")
+        nc_files.sort(key=os.path.getmtime)
+        file_to_open = nc_files[-1]
+    if len(nc_files) == 1:
+        file_to_open = nc_files[0]
+    all_output = xr.open_dataset(file_to_open)
+    print(all_output)
+    id_stem = wb_id.split("-")[1]
+    gage_output = all_output.sel(feature_id=int(id_stem))
+    gage_output = gage_output.drop_vars(["type", "velocity", "depth", "nudge", "feature_id"])
+    gage_output = gage_output.to_dataframe()
+    print(gage_output)
+    return gage_output.reset_index()
 
 
 def get_simulation_output_csv(wb_id, folder_to_eval):
