@@ -12,18 +12,29 @@ import xarray as xr
 logger = logging.getLogger(__name__)
 
 USGS_NWM30_XWALK = "s3://ciroh-rti-public-data/teehr-data-warehouse/common/crosswalks/usgs_nwm30_crosswalk.conus.parquet"  # noqa
-# USGS_NWM20_XWALK = "/mnt/data/ciroh/eval_system/nwm/usgs_nwm20_crosswalk.conus.parquet"  # noqa
-
 USGS_POINT_GEOMETRY = "s3://ciroh-rti-public-data/teehr-data-warehouse/common/geometry/usgs_point_geometry.all.parquet"  # noqa
-# USGS_POINT_GEOMETRY = "/mnt/data/usgs/usgs_point_geometry.conus.parquet"  # noqa
 
 
 def get_usgs_nwm30_crosswalk():
-    return pd.read_parquet(USGS_NWM30_XWALK, storage_options={"client_kwargs":{"region_name":"us-east-2"},"anon":True})
+    return pd.read_parquet(
+        USGS_NWM30_XWALK,
+        storage_options={
+            "client_kwargs":
+                {"region_name": "us-east-2"},
+                "anon": True
+            }
+        )
 
 
 def get_usgs_point_geometry():
-    return gpd.read_parquet(USGS_POINT_GEOMETRY, storage_options={"client_kwargs":{"region_name":"us-east-2"},"anon":True})
+    return gpd.read_parquet(
+        USGS_POINT_GEOMETRY,
+        storage_options={
+            "client_kwargs":
+                {"region_name": "us-east-2"},
+                "anon": True
+            }
+        )
 
 
 def get_simulation_output_netcdf(wb_id, folder_to_eval):
@@ -109,7 +120,7 @@ def get_gages_from_hydrofabric(folder_to_eval):
         ).fetchall()
     # Fixme Take only the first result if a gage shows up more than once.
     # Should be fixed upstream in hydrofabric with only error handling here.
-    results = [(r[0],r[1].split(',')[0]) for r in results]
+    results = [(r[0], r[1].split(',')[0]) for r in results]
     return results
 
 
