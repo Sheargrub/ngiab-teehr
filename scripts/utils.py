@@ -37,6 +37,25 @@ def get_usgs_point_geometry():
         )
 
 
+def get_simulation_output_format(folder_to_eval):
+    """
+    determines the output format from files in the outputs/troute folder
+    the troute config was called ngen.yaml and now is called troute.yaml
+    so we can just check the output folder for the types
+    """
+    # check for netcdf files
+    nc_file = folder_to_eval / "outputs" / "troute" / "*.nc"
+    nc_files = glob.glob(str(nc_file))
+    if len(nc_files) > 0:
+        return "netcdf"
+    # check for csv files
+    csv_file = folder_to_eval / "outputs" / "troute" / "*.csv"
+    csv_files = glob.glob(str(csv_file))
+    if len(csv_files) > 0:
+        return "csv"
+    raise FileNotFoundError("No output files found in the outputs/troute folder")
+
+
 def get_simulation_output_netcdf(wb_id, folder_to_eval):
     """Read Nextgen simulation output from netcdf file.
 
@@ -59,12 +78,13 @@ def get_simulation_output_netcdf(wb_id, folder_to_eval):
     if len(nc_files) == 1:
         file_to_open = nc_files[0]
     all_output = xr.open_dataset(file_to_open)
-    print(all_output)
+    # print(all_output)
     id_stem = wb_id.split("-")[1]
     gage_output = all_output.sel(feature_id=int(id_stem))
     gage_output = gage_output.drop_vars(["type", "velocity", "depth", "nudge", "feature_id"])
+    gage_output = gage_output.rename({"time": "current_time"})
     gage_output = gage_output.to_dataframe()
-    print(gage_output)
+    # print(gage_output)
     return gage_output.reset_index()
 
 
@@ -114,13 +134,27 @@ def get_gages_from_hydrofabric(folder_to_eval):
     if gpkg_file is None:
         raise FileNotFoundError("No subset.gpkg file found in folder")
 
+    # figure out if the hf is v20.1 or v2.2
+    # 2.2 has a pois table, 20.1 does not
     with sqlite3.connect(gpkg_file) as conn:
         results = conn.execute(
-            "SELECT id, rl_gages FROM flowpath_attributes WHERE rl_gages IS NOT NULL"
+            "SELECT count(*) FROM gpkg_contents WHERE table_name = 'pois'"
         ).fetchall()
-    # Fixme Take only the first result if a gage shows up more than once.
-    # Should be fixed upstream in hydrofabric with only error handling here.
-    results = [(r[0], r[1].split(',')[0]) for r in results]
+
+    if results[0][0] == 0:
+        with sqlite3.connect(gpkg_file) as conn:
+            results = conn.execute(
+                "SELECT id, rl_gages FROM flowpath_attributes WHERE rl_gages IS NOT NULL"
+            ).fetchall()
+            # Fixme Take only the first result if a gage shows up more than once.
+            # Should be fixed upstream in hydrofabric with only error handling here.
+            results = [(r[0], r[1].split(",")[0]) for r in results]
+    else:
+        with sqlite3.connect(gpkg_file) as conn:
+            results = conn.execute(
+                "SELECT id, gage FROM 'flowpath-attributes' WHERE gage IS NOT NULL"
+            ).fetchall()
+
     return results
 
 
