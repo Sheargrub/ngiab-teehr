@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.1 - 2024-11-13
+
+### Added
+* Added a check for a table only present in version 2.2 of the hydrofabric
+
+* Fetch the gages from the hf depending on the version
+
+* Added a check for the troute output format
+
+* Renamed the netcdf time variable to match the field mappings used by the csv output
+
+* Also added UV to the build dockerfile to speed it up a bit (unrelated to other changes and can be removed if needed)
+
+* Added Root Mean Standard Deviation Ratio metric (RSR)
+
+### Changed
+* None
+
 
 ## 0.1.0 - 2024-10-15
 
