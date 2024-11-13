@@ -159,7 +159,8 @@ def main():
         include_metrics=[
             metrics.KlingGuptaEfficiency(),
             metrics.NashSutcliffeEfficiency(),
-            metrics.RelativeBias()
+            metrics.RelativeBias(),
+            metrics.RootMeanStandardDeviationRatio(),
         ]
     ).to_pandas()
     df.to_csv(Path(TEST_STUDY_DIR, "metrics.csv"), index=False)
