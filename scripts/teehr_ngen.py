@@ -12,8 +12,10 @@ from utils import (
     get_usgs_nwm30_crosswalk,
     get_usgs_point_geometry,
     get_simulation_output_csv,
+    get_simulation_output_netcdf,
     get_gages_from_hydrofabric,
-    get_simulation_start_end_time
+    get_simulation_start_end_time,
+    get_simulation_output_format,
 )
 
 # In NGEN this will be provided by NGEN.
@@ -51,15 +53,24 @@ def main():
     # Get the NGEN-USGS gages from the hydrofabric.
     ngen_usgs_gages = get_gages_from_hydrofabric(NGEN_DATA_DIR)
 
+    # Check for netcdf or csv output files.
+    sim_output_format = get_simulation_output_format(NGEN_DATA_DIR)
+
     # Read the NGEN output timeseries and link to USGS and NWM ID's
     gage_output_list = []
     for gage_pair in ngen_usgs_gages:
-        gage_output = get_simulation_output_csv(gage_pair[0], NGEN_DATA_DIR)
+        if "usgs-" + gage_pair[1] not in usgs_nwm_xwalk_df.index:
+            continue
+        if sim_output_format == "netcdf":
+            gage_output = get_simulation_output_netcdf(gage_pair[0], NGEN_DATA_DIR)
+        elif sim_output_format == "csv":
+            gage_output = get_simulation_output_csv(gage_pair[0], NGEN_DATA_DIR)
         gage_output["ngen_id"] = "ngen-" + gage_pair[0].split("-")[1]
         gage_output["usgs_id"] = "usgs-" + gage_pair[1]
         gage_output["nwm_id"] = usgs_nwm_xwalk_df["secondary_location_id"].loc["usgs-" + gage_pair[1]]
         gage_output_list.append(gage_output)
     all_ngen_output = pd.concat(gage_output_list)
+    print(all_ngen_output)
     all_ngen_output.to_parquet(NGEN_CACHE_OUTPUT)
 
     # # FOR TESTING: Limit to a single day.
