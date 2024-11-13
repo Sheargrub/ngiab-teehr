@@ -20,7 +20,7 @@ from utils import (
 
 # In NGEN this will be provided by NGEN.
 NGEN_DATA_DIR = Path("data")
-# NGEN_DATA_DIR = Path("/home/sam/git/NextGen/ngen-data/AWI_16_2853886_006")
+# NGEN_DATA_DIR = Path("/home/sam/git/NextGen/gen-data/AWI_16_2853886_006")
 
 # Set a path to the directory where the evaluation will be created
 TEST_STUDY_DIR = Path(NGEN_DATA_DIR, "teehr")
@@ -70,7 +70,7 @@ def main():
         gage_output["nwm_id"] = usgs_nwm_xwalk_df["secondary_location_id"].loc["usgs-" + gage_pair[1]]
         gage_output_list.append(gage_output)
     all_ngen_output = pd.concat(gage_output_list)
-    print(all_ngen_output)
+    # print(all_ngen_output)
     all_ngen_output.to_parquet(NGEN_CACHE_OUTPUT)
 
     # # FOR TESTING: Limit to a single day.
