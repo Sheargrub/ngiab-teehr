@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.2 - 2024-11-14
+
+### Added
+* None
+
+### Changed
+* Installs TEEHR from main instead of v0.4-beta
+
+* Updated requirements.txt
+
+
 ## 0.1.1 - 2024-11-13
 
 ### Added
