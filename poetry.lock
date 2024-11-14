@@ -3204,7 +3204,7 @@ zarr = "^2.16.1"
 
 [package.source]
 type = "git"
-url = "git@github.com:RTIInternational/teehr.git"
+url = "https://github.com/RTIInternational/teehr.git"
 reference = "main"
 resolved_reference = "fd42fee402946052d56cf77170b9cfc8fa0ca906"
 
@@ -3666,4 +3666,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "669d660c71313697f485ff29c9a628cd06bd3893d12ba3d7330cb3c79b76435b"
+content-hash = "cd241c3500d17fd11fb2082bc5264fafc8b5060076451f6d7a3581ab74166381"

@@ -11,7 +11,7 @@ package-mode = false
 python = "^3.10"
 bokeh = "^3.6.0"
 dask-expr = "^1.1.15"
-teehr = {git = "git@github.com:RTIInternational/teehr.git", rev = "main"}
+teehr = {git = "https://github.com/RTIInternational/teehr.git", rev = "main"}
 
 
 [build-system]
