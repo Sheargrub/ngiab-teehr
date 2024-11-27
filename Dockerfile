@@ -1,8 +1,8 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.11.2-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get upgrade && apt-get install -y git openjdk-11-jdk libgdal-dev
+RUN apt-get update && apt-get upgrade && apt-get install -y git openjdk-11-jdk
 
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$PATH:$JAVA_HOME/bin
