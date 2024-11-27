@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3 - 2024-11-27
+
+### Added
+* ARM build and `latest` tag in `docker_publish.yaml`
+
+### Changed
+* Checks if USGS are returned from the hydrofabric and raises an error if not.
+
+
 ## 0.1.2 - 2024-11-14
 
 ### Added
