@@ -1,6 +1,7 @@
 """This is an example of how to use TEEHR in NGEN."""
 from pathlib import Path
 import shutil
+import logging
 
 import pandas as pd
 from teehr import Evaluation
@@ -18,9 +19,11 @@ from utils import (
     get_simulation_output_format,
 )
 
+logger = logging.getLogger(__name__)
+
 # In NGEN this will be provided by NGEN.
 NGEN_DATA_DIR = Path("data")
-# NGEN_DATA_DIR = Path("/home/sam/git/NextGen/gen-data/AWI_16_2853886_006")
+# NGEN_DATA_DIR = Path("/home/sam/ngiab_preprocess_output/cat-508412")
 
 # Set a path to the directory where the evaluation will be created
 TEST_STUDY_DIR = Path(NGEN_DATA_DIR, "teehr")
@@ -46,15 +49,21 @@ def main():
     # Get the USGS to NWM crosswalk and USGS point geometry from s3.
     usgs_nwm_xwalk_df = get_usgs_nwm30_crosswalk()
     usgs_nwm_xwalk_df = usgs_nwm_xwalk_df.set_index("primary_location_id")
-
     usgs_point_geom = get_usgs_point_geometry()
     usgs_point_geom = usgs_point_geom.set_index("id")
 
     # Get the NGEN-USGS gages from the hydrofabric.
     ngen_usgs_gages = get_gages_from_hydrofabric(NGEN_DATA_DIR)
+    if len(ngen_usgs_gages) == 0:
+        raise ValueError(
+            "No USGS gages found in the hydrofabric!"
+            f" Output directory: {NGEN_DATA_DIR.stem}"
+        )
+    logger.info(f"Found {len(ngen_usgs_gages)} USGS gages in the hydrofabric.")
 
     # Check for netcdf or csv output files.
     sim_output_format = get_simulation_output_format(NGEN_DATA_DIR)
+    logger.info(f"Simulation output format: {sim_output_format}")
 
     # Read the NGEN output timeseries and link to USGS and NWM ID's
     gage_output_list = []
@@ -62,9 +71,15 @@ def main():
         if "usgs-" + gage_pair[1] not in usgs_nwm_xwalk_df.index:
             continue
         if sim_output_format == "netcdf":
-            gage_output = get_simulation_output_netcdf(gage_pair[0], NGEN_DATA_DIR)
+            gage_output = get_simulation_output_netcdf(
+                gage_pair[0],
+                NGEN_DATA_DIR
+            )
         elif sim_output_format == "csv":
-            gage_output = get_simulation_output_csv(gage_pair[0], NGEN_DATA_DIR)
+            gage_output = get_simulation_output_csv(
+                gage_pair[0],
+                NGEN_DATA_DIR
+            )
         gage_output["ngen_id"] = "ngen-" + gage_pair[0].split("-")[1]
         gage_output["usgs_id"] = "usgs-" + gage_pair[1]
         gage_output["nwm_id"] = usgs_nwm_xwalk_df["secondary_location_id"].loc["usgs-" + gage_pair[1]]
@@ -72,10 +87,6 @@ def main():
     all_ngen_output = pd.concat(gage_output_list)
     # print(all_ngen_output)
     all_ngen_output.to_parquet(NGEN_CACHE_OUTPUT)
-
-    # # FOR TESTING: Limit to a single day.
-    # end_date = "2018-04-02 01:00:00"
-    # all_ngen_output = all_ngen_output[all_ngen_output["current_time"] <= end_date]
 
     # Get primary locations and load to dataset.
     locations_df = usgs_point_geom.loc[all_ngen_output["usgs_id"].unique()]
@@ -92,7 +103,6 @@ def main():
     ev.location_crosswalks.load_parquet(
         in_path=NWM_USGS_XWALK
     )
-
     # Load the USGS-NGEN Crosswalk.
     tmp_df = all_ngen_output[~all_ngen_output["ngen_id"].duplicated()]
     ngen_usgs_eval_xwalk_df = tmp_df[["usgs_id", "ngen_id"]].copy()
@@ -106,7 +116,6 @@ def main():
     ev.location_crosswalks.load_parquet(
         in_path=NGEN_USGS_XWALK
     )
-
     # Load the NGEN simulation timeseries
     ev.configurations.add(
         Configuration(
@@ -115,7 +124,6 @@ def main():
             description="Nextgen simulation output"
         )
     )
-
     # Load the NWM retrospective timeseries
     # client = Client()
     ev.fetch.nwm_retrospective_points(
