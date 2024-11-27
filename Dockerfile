@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.10-bullseye
 
 WORKDIR /app
 
@@ -10,8 +10,7 @@ ENV PATH=$PATH:$JAVA_HOME/bin
 COPY requirements.txt requirements.txt
 
 RUN pip install uv
-# RUN uv pip install --no-cache-dir -r requirements.txt --system
-RUN python -m pip install -r requirements.txt
+RUN uv pip install --no-cache-dir -r requirements.txt --system
 
 COPY scripts/ .
 
