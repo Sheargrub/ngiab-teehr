@@ -45,41 +45,10 @@ HPC support is unfortunately not yet available at this time.
 - `pyproject.toml`: Defines project build properties for development purposes. Otherwise unused
   - `poetry.lock` is directly associated with this and should not be edited. <!-- TODO: These might be vestigial and worth removing? -->
 
-### Docker image
-
-To maximize its portability and ease of use, this integration runs from a Docker container, which is built from the Dockerfile at the root of the repository.
-
-
-### To build and push the TEEHR image to the AWI CIROH registry
-
-Customize the metrics calculated by TEEHR or any other code related to the workflow:
-
-1. Create a branch off of main
-2. Make your edits to `scripts/teehr_ngen.py` and/or `scripts/utils.py`
-3. Update the `Changelog` so that your changes can be associated with a tag
-4. Submit and PR and merge
-5. Then checkout main and pull the new changes, and push your tag:
-```bash
-git checkout main
-git pull
-git tag -a v0.x.x -m "version 0.x.x"
-git push origin v0.x.x
-```
-
-This will trigger a `github action` to build and push the image with your tag, and the `latest` tag, to the AWI CIROH registry.
-
-To build and push locally:
-```
-docker build -t awiciroh/ngiab-teehr:<tag name> .
-docker push awiciroh/ngiab-teehr:<tag name>
-```
-
-Now you can specify the image tag in the guide.sh script.
-
 
 ## Contributing
 
-Interested in contributing? Please see our [contribution guide](09_CONTRIBUTE.md) for more information.
+Interested in contributing? Please see our [contribution guide](04_CONTRIBUTE.md) for more information.
 
 ## Additional resources
 
